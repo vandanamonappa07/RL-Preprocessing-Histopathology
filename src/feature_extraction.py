@@ -7,32 +7,24 @@ Extracts statistical and texture features from histopathological images.
 
 import cv2
 import numpy as np
+from skimage.measure import shannon_entropy
 
 
 def extract_features(img):
-    """
-    Extract image quality features.
-
-    Features:
-    1. Average nucleus area (proxy)
-    2. Texture density
-    3. Entropy
-    4. Contrast
-    """
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    contrast = gray.std()
+    # Average intensity
+    mean_intensity = np.mean(gray)
 
-    entropy = -np.sum((gray / 255.0) * np.log2(gray / 255.0 + 1e-9))
+    # Standard deviation (contrast)
+    contrast = np.std(gray)
 
-    texture_density = cv2.Laplacian(gray, cv2.CV_64F).var()
+    # Entropy
+    entropy = shannon_entropy(gray)
 
-    avg_nucleus_area = np.mean(gray > np.mean(gray))
+    # Edge density
+    edges = cv2.Canny(gray, 100, 200)
+    edge_density = np.sum(edges) / edges.size
 
-    return np.array([
-        avg_nucleus_area,
-        texture_density,
-        entropy,
-        contrast
-    ])
+    return np.array([mean_intensity, contrast, entropy, edge_density, contrast])
