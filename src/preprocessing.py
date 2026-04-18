@@ -1,63 +1,44 @@
 """
 File: preprocessing.py
-Author: Vandan V.S
+Author: Vandana B.S
 Description:
 Contains image preprocessing operations used as actions in the RL framework.
 """
 
 import cv2
 import numpy as np
-from skimage import exposure
 
 
-def color_normalization(img, reference=None):
-    """
-    Perform min-max color normalization.
-    """
-    return cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)
+def histogram_equalization(img):
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    eq = cv2.equalizeHist(gray)
+    return cv2.cvtColor(eq, cv2.COLOR_GRAY2BGR)
+
+
+def gaussian_blur(img):
+    return cv2.GaussianBlur(img, (5, 5), 0)
+
+
+def sharpen(img):
+    kernel = np.array([[0, -1, 0],
+                       [-1, 5, -1],
+                       [0, -1, 0]])
+    return cv2.filter2D(img, -1, kernel)
+
+
+def edge_enhancement(img):
+    edges = cv2.Canny(img, 100, 200)
+    return cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
 
 
 def histogram_matching(img, reference):
-    """
-    Match histogram of input image with reference image.
-    """
-    if reference is None:
-        raise ValueError("Reference image required for histogram matching")
-
-    reference_resized = cv2.resize(reference, (img.shape[1], img.shape[0]))
-
-    return exposure.match_histograms(img, reference_resized, channel_axis=-1)
+    return cv2.addWeighted(img, 0.5, reference, 0.5, 0)
 
 
-def contrast_enhancement(img):
-    """
-    Enhance image contrast.
-    """
-    return cv2.convertScaleAbs(img, alpha=1.5, beta=0)
-
-
-def gamma_correction(img, gamma=1.2):
-    """
-    Perform gamma correction.
-    """
-    inv_gamma = 1.0 / gamma
-    table = np.array([(i / 255.0) ** inv_gamma * 255 for i in range(256)]).astype("uint8")
-
-    return cv2.LUT(img, table)
-
-
-def no_operation(img):
-    """
-    Return original image without modification.
-    """
-    return img
-
-
-# Action space for RL
 ACTIONS = [
-    color_normalization,
-    histogram_matching,
-    contrast_enhancement,
-    gamma_correction,
-    no_operation
+    histogram_equalization,
+    gaussian_blur,
+    sharpen,
+    edge_enhancement,
+    histogram_matching
 ]
