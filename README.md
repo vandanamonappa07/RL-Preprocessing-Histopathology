@@ -6,13 +6,17 @@ RL_Preprocessing_Framework/
 ├── training.py
 │
 ├── dataset/
-│   ├── example1.jpg
-│   ├── example2.jpg
-│   └── example3.jpg
+│   ├── 1.jpg
+│   ├── 2.jpg
+│   └── 3.jpg
 │
 ├── reference/
-│   ├── ref1.jpg
-│   └── ref2.jpg
+│   ├── Osteosarcoma_-_intermed_mag.jpg
+│   ├── Osteosarcoma_-_low_mag.jpg
+│   ├── Osteosarcoma_-_very_high_mag.jpg
+│   ├── Small_cell_osteosarcoma_-_high_mag.jpg
+│   ├── Small_cell_osteosarcoma_-_intermed_mag.jpg
+│   └── Small_cell_osteosarcoma_-_very_high_mag.jpg
 │
 ├── requirements.txt
 └── README.md
